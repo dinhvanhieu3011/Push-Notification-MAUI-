@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "940668016015",
+    "firebase_url": "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "myapp-fc4db",
+    "storage_bucket": "myapp-fc4db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940668016015:android:51b360685b031f9e4827fa",
+        "android_client_info": {
+          "package_name": "com.companyname.pushnoti"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVsIzHzoZKyVlX8bptISvPxza8lZC4O4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940668016015:android:1c6000d07b17abcc4827fa",
+        "android_client_info": {
+          "package_name": "com.companyname.recier"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVsIzHzoZKyVlX8bptISvPxza8lZC4O4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
