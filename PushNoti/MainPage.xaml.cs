@@ -8,12 +8,13 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Firebase.Database;
 using System.Collections.ObjectModel;
+using PushNoti.Components.Pages;
 
 namespace PushNoti
 {
     public partial class MainPage : ContentPage
     {
-        FirebaseClient firebaseClient = new FirebaseClient(baseUrl: "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app/");
+       FirebaseClient firebaseClient = new FirebaseClient(baseUrl: "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app/");
        public ObservableCollection<PushNotification> messages { get; set; } = new ObservableCollection<PushNotification>();
 
         int count = 0;
@@ -21,6 +22,8 @@ namespace PushNoti
         public MainPage()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(DetailPage), typeof(DetailPage));
+
             BindingContext = this;
             var collection = firebaseClient
                     .Child("notifications")
@@ -33,52 +36,23 @@ namespace PushNoti
                         }
                     });
 
-            WeakReferenceMessenger.Default.Register<PushNotificationReceived>(this, (r, m) =>
-            {
-                string msg = m.Value;
-                NavigateToPage();
-            });
-
             if (Preferences.ContainsKey("DeviceToken"))
             {
                 _deviceToken = Preferences.Get("DeviceToken", "");
             }
-
            // ReadFireBaseAdminSdk();
-            NavigateToPage();
         }
-
         private async void ReadFireBaseAdminSdk()
         {
             var stream = await FileSystem.OpenAppPackageFileAsync("google-services.json");
             var reader = new StreamReader(stream);
-
             var jsonContent = reader.ReadToEnd();
-
-
             if (FirebaseMessaging.DefaultInstance == null)
             {
                 FirebaseApp.Create(new AppOptions()
                 {
                     Credential = GoogleCredential.FromJson(jsonContent)
                 });
-            }
-        }
-        private void NavigateToPage()
-        {
-
-            if (Preferences.ContainsKey("NavigationID"))
-            {
-                string id = Preferences.Get("NavigationID", "");
-                //if (id == "1")
-                //{
-                //    AppShell.Current.GoToAsync(nameof(NewPage1));
-                //}
-                //if (id == "2")
-                //{
-                //    AppShell.Current.GoToAsync(nameof(NewPage2));
-                //}
-                //Preferences.Remove("NavigationID");
             }
         }
         private async void OnCounterClicked(object sender, EventArgs e)
@@ -139,6 +113,25 @@ namespace PushNoti
                 }
             }
         }
+        private async void Add_Clicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(DetailPage));
+        }
+        private async void notesCollection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.CurrentSelection.Count != 0)
+            {
+                // Get the note model
+                var note = (Models.PushNotification)e.CurrentSelection[0];
+
+                // Should navigate to "NotePage?ItemId=path\on\device\XYZ.notes.txt"
+                await Shell.Current.GoToAsync($"//DetailPage?ItemId={note.Id}");
+
+                // Unselect the UI
+                notesCollection.SelectedItem = null;
+            }
+        }
+
 
     }
 }

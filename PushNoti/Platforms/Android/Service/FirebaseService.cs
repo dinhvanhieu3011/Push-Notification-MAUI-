@@ -77,6 +77,7 @@ namespace PushNoti.Platforms.Android.Service
             FirebaseClient firebaseClient = new FirebaseClient(baseUrl: "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app/");
             firebaseClient.Child("notifications").PostAsync(new PushNotification
             {
+                Id = Guid.NewGuid().ToString(),
                 Title = title,
                 Body = messageBody,
                 CreatedDate = DateTime.Now,
