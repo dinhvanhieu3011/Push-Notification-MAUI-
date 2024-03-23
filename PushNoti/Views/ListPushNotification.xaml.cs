@@ -1,4 +1,5 @@
 using Firebase.Database;
+using Firebase.Database.Query;
 using Firebase.Database.Streaming;
 using Newtonsoft.Json;
 using PushNoti.Models;
@@ -16,33 +17,31 @@ public partial class ListPushNotification : ContentPage
     public ListPushNotification()
     {
         InitializeComponent();
+        Routing.RegisterRoute(nameof(Views.DetailPage), typeof(Views.DetailPage));
 
         BindingContext = this;
-        var collection = firebaseClient
-                .Child("notifications")
-                .AsObservable<PushNotification>()
-                .Subscribe((item) =>
-                {
-                    if (item.Object != null)
-                    {
-                        if (item.EventType == FirebaseEventType.InsertOrUpdate)
-                        {
-                            {
-                                messages.Insert(0,item.Object);
-                            }
-                        }
-                    }
-                });
+        Load();
         if (Preferences.ContainsKey("DeviceToken"))
         {
             _deviceToken = Preferences.Get("DeviceToken", "");
         }
     }
-
-    //protected override void OnAppearing()
-    //{
-    //    ((Models.ListPushNotification)BindingContext).Load();
-    //}
+    private void Load()
+    {
+        var collection = firebaseClient
+        .Child("notifications")
+        .OrderByKey().LimitToLast(10)
+        .AsObservable<PushNotification>()
+        .Subscribe((item) =>
+        {
+            if (item.Object != null)
+            {
+                messages.Insert(0, item.Object);
+                if (messages.Count > 10)
+                    messages.RemoveAt(9);
+            }
+        });
+    }
 
     private async void Add_Clicked(object sender, EventArgs e)
     {
@@ -76,14 +75,11 @@ public partial class ListPushNotification : ContentPage
     {
         if (e.CurrentSelection.Count != 0)
         {
-            // Get the note model
-            var note = (Models.PushNotification)e.CurrentSelection[0];
-
-            // Should navigate to "DetailPage?ItemId=path\on\device\XYZ.notes.txt"
-            await Shell.Current.GoToAsync($"{nameof(DetailPage)}?{nameof(DetailPage.ItemId)}={note.Id}");
-
-            // Unselect the UI
-            notesCollection.SelectedItem = null;
+            if (e.CurrentSelection.FirstOrDefault() is not PushNotification item)
+                return;
+            await Navigation.PushAsync(new DetailPage{
+                BindingContext = item
+            });
         }
     }
 }

@@ -30,4 +30,6 @@
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>
+    
+    
 </ContentPage>
