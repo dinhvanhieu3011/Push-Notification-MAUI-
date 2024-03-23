@@ -80,6 +80,7 @@ namespace PushNoti.Platforms.Android.Service
                 Title = title,
                 Body = messageBody,
                 CreatedDate = DateTime.Now,
+                Id = Guid.NewGuid().ToString(),
             });
         }
     }

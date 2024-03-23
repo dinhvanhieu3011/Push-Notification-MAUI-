@@ -1,69 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:PushNoti"
-             x:Class="PushNoti.MainPage"
-             BackgroundColor="{DynamicResource PageBackgroundColor}">
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="PushNoti.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:PushNoti.Views"
+    Shell.FlyoutBehavior="Disabled">
 
-    <!--<BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
-        <BlazorWebView.RootComponents>
-            <RootComponent Selector="#app" ComponentType="{x:Type local:Components.Routes}" />
-        </BlazorWebView.RootComponents>
-    </BlazorWebView>-->
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25"
-            VerticalOptions="Center">
-            <CollectionView 
-                SelectionMode="Single"
-                ItemsSource="{Binding messages}"       
-                >
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Label
-                            Padding="5"
-                            FontSize="Medium"
-                            Text="{Binding CreatedDate}" />
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+    <TabBar>
+        <ShellContent
+            Title="Notes"
+            ContentTemplate="{DataTemplate views:ListPushNotification}"
+            Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
 
-            <!--<CollectionView Grid.Row="2" Grid.ColumnSpan="2"
-                        ItemsSource="{Binding messages}"
-                        SelectionMode="None">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="{x:Type x:String}">
-                        <SwipeView>
-                            --><!--<SwipeView.RightItems>
-                                        <SwipeItems>
-                                            <SwipeItem Text="Delete"
-                                                   BackgroundColor="Red"
-                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=DeleteCommand}"
-                                                   CommandParameter="{Binding .}"/>
-                                        </SwipeItems>
-                                    </SwipeView.RightItems>--><!--
-                            <Grid Padding="0,5">
-                                <Frame>
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer 
-                                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=TapCommand}"
-                                           CommandParameter="{Binding .}"/>
-                                    </Frame.GestureRecognizers>
-                                    <Label Text="{Binding .}"
-                                       FontSize="24"/>
-                                </Frame>
-                            </Grid>
-                        </SwipeView>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>-->
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
-        </VerticalStackLayout>
-    </ScrollView>
-</ContentPage>
+    </TabBar>
+
+</Shell>
