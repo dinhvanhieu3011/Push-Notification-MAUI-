@@ -1,5 +1,4 @@
-﻿using PushNoti.Views;
-
+﻿
 namespace PushNoti
 {
     public partial class App : Application
@@ -8,7 +7,7 @@ namespace PushNoti
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new ListPushNotification());
+            MainPage = new MainPage();
 
         }
     }

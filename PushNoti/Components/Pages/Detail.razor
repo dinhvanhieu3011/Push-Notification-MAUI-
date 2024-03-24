@@ -1,0 +1,33 @@
+﻿@page "/detail"
+
+
+<button @onclick="BackToList">Back</button>
+<br />
+<b>@Title</b>
+<br />
+<i>@CreatedDate</i>
+<br />
+<p>@Body</p>
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string CreatedDate { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string Title { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string Body { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        CreatedDate = CreatedDate ;
+        Title = Title ;
+        Body = Body ;
+    }
+
+    private async Task BackToList()
+    {
+        Navigation.NavigateTo($"/");
+    }
+}

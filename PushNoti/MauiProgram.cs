@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using PushNoti.Views;
 
 namespace PushNoti
 {
@@ -21,8 +20,6 @@ namespace PushNoti
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
-            builder.Services.AddSingleton<ListPushNotification>();
-            builder.Services.AddTransient<DetailPage>();
 
             return builder.Build();
         }
