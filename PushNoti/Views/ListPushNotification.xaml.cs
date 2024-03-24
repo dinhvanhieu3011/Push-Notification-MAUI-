@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using PushNoti.Models;
 using PushNotificationDemoMAUI.Models;
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using System.Text;
 
 namespace PushNoti.Views;
@@ -17,15 +18,27 @@ public partial class ListPushNotification : ContentPage
     public ListPushNotification()
     {
         InitializeComponent();
-        Routing.RegisterRoute(nameof(Views.DetailPage), typeof(Views.DetailPage));
-
         BindingContext = this;
+        FirstLoad();
         Load();
         if (Preferences.ContainsKey("DeviceToken"))
         {
             _deviceToken = Preferences.Get("DeviceToken", "");
         }
     }
+
+    private void FirstLoad()
+    {
+        var list = firebaseClient
+                     .Child("notifications")
+                     .OrderByKey().LimitToLast(10)
+                     .OnceAsync<PushNotification>().Result.Select(x => x.Object).OrderByDescending(x=>x.CreatedDate).ToList().Take(15);
+        foreach (var item in list)
+        {
+            messages.Add(item);
+        }
+    }
+
     private void Load()
     {
         var collection = firebaseClient
