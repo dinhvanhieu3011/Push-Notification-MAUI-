@@ -32,7 +32,7 @@ public partial class ListPushNotification : ContentPage
         var list = firebaseClient
                      .Child("notifications")
                      .OrderByKey().LimitToLast(10)
-                     .OnceAsync<PushNotification>().Result.Select(x => x.Object).OrderByDescending(x=>x.CreatedDate).ToList().Take(15);
+                     .OnceAsync<PushNotification>().Result.Select(x => x.Object).OrderByDescending(x=>x.CreatedDate).ToList().Take(10);
         foreach (var item in list)
         {
             messages.Add(item);
