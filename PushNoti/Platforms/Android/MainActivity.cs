@@ -6,7 +6,7 @@ using AndroidX.Core.App;
 using AndroidX.Core.Content;
 using CommunityToolkit.Mvvm.Messaging;
 using PushNoti.Models;
-
+using Plugin.Fingerprint; 
 
 namespace PushNoti
 {
@@ -19,6 +19,7 @@ namespace PushNoti
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            CrossFingerprint.SetCurrentActivityResolver(() => this);
             if (ContextCompat.CheckSelfPermission(this, Android.Manifest.Permission.PostNotifications) == Permission.Denied)
             {
                 ActivityCompat.RequestPermissions(this, new String[] { Android.Manifest.Permission.PostNotifications }, 1);

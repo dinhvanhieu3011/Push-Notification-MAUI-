@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Plugin.Fingerprint.Abstractions;
+using Plugin.Fingerprint;
 
 namespace PushNoti
 {
@@ -20,7 +22,8 @@ namespace PushNoti
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
-
+            builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddSingleton(typeof(IFingerprint), CrossFingerprint.Current);
             return builder.Build();
         }
     }
