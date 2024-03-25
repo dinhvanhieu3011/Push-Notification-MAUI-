@@ -23,7 +23,7 @@
 @code {
     FirebaseClient firebaseClient = new FirebaseClient(baseUrl: "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app/");
     List<PushNotification> messages { get; set; } = new List<PushNotification>();
-    private readonly IFingerprint fingerprint;
+
     protected override async Task OnInitializedAsync()
     {
         FirstLoad();
@@ -61,7 +61,6 @@
     }
     private async Task NavigateToDetail(PushNotification item )
     {
-
         var createdDate = item.CreatedDate.ToString();
         var title = item.Title;
         var body = item.Body;
