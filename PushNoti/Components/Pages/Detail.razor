@@ -19,6 +19,29 @@
     [SupplyParameterFromQuery]
     public string Body { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        var isBiometricAuthAvailable = await _authService.CheckIfBiometricsAreAvailableAsync();
+        if (isBiometricAuthAvailable)
+        {
+            var authResult =
+                await _authService.AuthenticateAsync("FaceID", "App requires FaceID in order to login");
+
+            switch (authResult.Status)
+            {
+                case BiometricAuthenticationStatus.Success:
+                    break;
+                default:
+                    Navigation.NavigateTo($"/");
+                    break;
+            }
+        }
+        else
+        {
+            Navigation.NavigateTo($"/");
+        }
+    }
+
     protected override void OnParametersSet()
     {
         CreatedDate = CreatedDate ;
