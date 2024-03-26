@@ -4,9 +4,15 @@
              xmlns:local="clr-namespace:PushNoti"
              x:Class="PushNoti.MainPage"
              Title="MainPage">
-    <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
+    <!--<BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>
             <RootComponent Selector="#app" ComponentType="{x:Type local:Components.Routes}" />
         </BlazorWebView.RootComponents>
-    </BlazorWebView>
+    </BlazorWebView>-->
+    <Button
+                x:Name="CounterBtn"
+                Text="Click me"
+                SemanticProperties.Hint="Counts the number of times you click"
+                Clicked="OnCounterClicked"
+                HorizontalOptions="Center" />
 </ContentPage>

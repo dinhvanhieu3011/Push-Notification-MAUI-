@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Plugin.Fingerprint.Abstractions;
 using Plugin.Fingerprint;
+using PushNoti.Service.Interfaces;
+using PushNoti.Service.Implements;
 
 namespace PushNoti
 {
@@ -11,6 +13,7 @@ namespace PushNoti
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .RegisterServices()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -22,9 +25,12 @@ namespace PushNoti
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
-            builder.Services.AddSingleton<MainPage>();
-            builder.Services.AddSingleton(typeof(IFingerprint), CrossFingerprint.Current);
             return builder.Build();
+        }
+        private static MauiAppBuilder RegisterServices(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddSingleton<IBiometricAuthenticationService, BiometricAuthenticationService>();
+            return mauiAppBuilder;
         }
     }
 }
