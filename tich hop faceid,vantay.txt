@@ -1,0 +1,42 @@
+﻿1. Thêm thư viện plugin.Fingerprint
+2. Thêm thư mục service : BiometricAuthenticationService/ IBiometricAuthenticationService
+3. Trong Platforms/AndoridMaifest.xml thêm 
+	<uses-permission android:name="android.permission.USE_BIOMETRIC" />
+	<uses-permission android:name="android.permission.USE_FINGERPRINT" />
+	Trong MainActivity thêm
+	            CrossFingerprint.SetCurrentActivityResolver(() => this); vào hàm OnCreate
+
+   Trong IOS/Info.plist thêm
+   	<key>NSFaceIDUsageDescription</key>
+	<string>Need your face to unlock magic things</string>
+
+4.
+Thêm Models\Biometric\BiometricAuthenticationResult.cs
+Thêm Enum\BiometricAuthenticationStatus
+5.
+Trong MainPage.cs 
+   AddSingleton<IBiometricAuthenticationService, BiometricAuthenticationService>();
+
+6.
+        //. Kiểm tra thiết bị có cho sử dụng khuôn mặt/ vân tay hay không
+        var isBiometricAuthAvailable = await _authService.CheckIfBiometricsAreAvailableAsync();
+        if (isBiometricAuthAvailable)
+        {
+
+            // Hệ thống hiển thị giao diện nhập khuôn mặt vân tay
+            var authResult = await _authService.AuthenticateAsync("", "App requires FaceID in order to login");
+
+            switch (authResult.Status)
+            {
+                // Nếu kết quả thành công
+                case BiometricAuthenticationStatus.Success:
+                    break;
+                // Thất bại
+                default:
+                    Navigation.NavigateTo($"/");
+                    break;
+            }
+        }
+        else{
+        }
+
