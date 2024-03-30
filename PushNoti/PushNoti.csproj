@@ -31,7 +31,11 @@
         <ApplicationVersion>1</ApplicationVersion>
 
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
-        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">28.0</SupportedOSPlatformVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+      <ProvisioningType>manual</ProvisioningType>
     </PropertyGroup>
 
     <ItemGroup>
@@ -59,7 +63,9 @@
     <ItemGroup>
       <GoogleServicesJson Include="Platforms\Android\google-services.json" />
     </ItemGroup>
-
+	<ItemGroup>
+		<BundleResource Include="Platforms\iOS\GoogleService-Info.plist" link="GoogleService-Info.plist" />
+	</ItemGroup>
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
         <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
@@ -70,6 +76,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Plugin.Fingerprint" Version="2.1.5" />
+        <PackageReference Include="Xamarin.Firebase.iOS.CloudMessaging" Version="8.10.0.3" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">

@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using CommunityToolkit.Mvvm.Messaging;
 <button @onclick="CreatePushNotification">Create an Push Notification</button>
 <br />
 <table class="table">
@@ -23,12 +24,12 @@
 @code {
     FirebaseClient firebaseClient = new FirebaseClient(baseUrl: "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app/");
     List<PushNotification> messages { get; set; } = new List<PushNotification>();
-
     protected override async Task OnInitializedAsync()
     {
         FirstLoad();
         ListenChanged();
     }
+
     protected void FirstLoad()
     {
         var list = firebaseClient
@@ -38,7 +39,7 @@
         foreach (var item in list)
         {
             messages.Add(item);
-        }    
+        }
     }
     protected void ListenChanged()
     {
@@ -59,13 +60,14 @@
                          }
                      });
     }
-    private async Task NavigateToDetail(PushNotification item )
+    private async Task NavigateToDetail(PushNotification item)
     {
         var createdDate = item.CreatedDate.ToString();
         var title = item.Title;
         var body = item.Body;
         Navigation.NavigateTo($"/detail?CreatedDate={createdDate}&title={title}&body={body}");
     }
+
     private async Task CreatePushNotification()
     {
         string _deviceToken = "";
@@ -74,7 +76,7 @@
             _deviceToken = Preferences.Get("DeviceToken", "");
         }
         var androidNotificationObject = new Dictionary<string, string>();
-        androidNotificationObject.Add("NavigationID", "2");
+        androidNotificationObject.Add("NavigationID", Guid.NewGuid().ToString());
         var pushNotificationRequest = new PushNotificationRequest
             {
                 notification = new NotificationMessageBody
@@ -97,5 +99,5 @@
             //     await App.Current.MainPage.DisplayAlert("Notification sent", "notification sent", "OK");
             // }
         }
-    } 
+    }
 }

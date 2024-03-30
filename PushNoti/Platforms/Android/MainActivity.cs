@@ -14,7 +14,7 @@ namespace PushNoti
     public class MainActivity : MauiAppCompatActivity
     {
         internal static readonly string Channel_ID = "TestChannel";
-        internal static readonly int NotificationID = 101;
+        internal static int NotificationID = 101;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -44,14 +44,14 @@ namespace PushNoti
 
                         Preferences.Set("NavigationID", idValue);
 
-                        WeakReferenceMessenger.Default.Send(new PushNotificationReceived("test"));
+                        WeakReferenceMessenger.Default.Send(new PushNotificationReceived("idValue"));
                     }
                 }
             }
         }
         private void CreateNotificationChannel()
         {
-            if (OperatingSystem.IsOSPlatformVersionAtLeast("android", 26))
+            if (OperatingSystem.IsOSPlatformVersionAtLeast("android", 28))
             {
                 var channel = new NotificationChannel(Channel_ID, "Test Notfication Channel", NotificationImportance.Default);
 

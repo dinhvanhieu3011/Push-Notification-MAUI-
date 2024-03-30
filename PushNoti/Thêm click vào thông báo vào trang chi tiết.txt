@@ -1,0 +1,121 @@
+﻿    
+    Khi tạo mới noti thì cần add id vào phần data ở đây add vô NavigationID
+    private async Task CreatePushNotification()
+    {
+        string _deviceToken = "";
+        if (Preferences.ContainsKey("DeviceToken"))
+        {
+            _deviceToken = Preferences.Get("DeviceToken", "");
+        }
+        var androidNotificationObject = new Dictionary<string, string>();
+        androidNotificationObject.Add("NavigationID", Guid.NewGuid().ToString());
+        var pushNotificationRequest = new PushNotificationRequest
+            {
+                notification = new NotificationMessageBody
+                {
+                    title = "Notification Title",
+                    body = "Notification body"
+                },
+                data = androidNotificationObject,
+                registration_ids = new List<string> { _deviceToken }
+            };
+        string url = "https://fcm.googleapis.com/fcm/send";
+        using (var client = new HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("key", "=" + "AAAAIxVuBHU:APA91bHfmUmwyZir7LEJislHhWwylzZk2dvkAwm7W7CbfKZbaRJBjQfpPPTLknTG6mTu6zctDwSYzNL1HrtgS8WPhcyeRsHgv31eZRFtghF3i-mRqS6A5lrNCqhZKJV75EMFB0Haxg3k");
+
+            string serializeRequest = JsonConvert.SerializeObject(pushNotificationRequest);
+            var response = await client.PostAsync(url, new StringContent(serializeRequest, Encoding.UTF8, "application/json"));
+            // if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            // {
+            //     await App.Current.MainPage.DisplayAlert("Notification sent", "notification sent", "OK");
+            // }
+        }
+    }
+
+    Khi tạo mới message trên db thì lấy id tạo ở trên qua intent
+            private void AddMessageToDb(string messageBody, string title, string id )
+        {
+            FirebaseClient firebaseClient = new FirebaseClient(baseUrl: "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app/");
+
+            firebaseClient.Child("notifications").PostAsync(new PushNotification
+            {
+                Title = title,
+                Body = messageBody,
+                CreatedDate = DateTime.Now,
+                Id = id,
+            });
+
+
+        }
+    
+    Vào main Layout thêm code
+    @code{
+    FirebaseClient firebaseClient = new FirebaseClient(baseUrl: "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app/");
+    protected override async Task OnInitializedAsync()
+    {
+
+        WeakReferenceMessenger.Default.Register<PushNotificationReceived>(this, (r, m) =>
+        {
+            string msg = m.Value;
+            NavigateToDetailByClickNotification();
+        });
+    }
+    private void NavigateToDetailByClickNotification()
+    {
+
+        if (Preferences.ContainsKey("NavigationID"))
+        {
+            string id = Preferences.Get("NavigationID", "");
+            var message = firebaseClient
+                    .Child("notifications")
+                    .OrderByKey()
+                    .OnceAsync<PushNotification>().Result.Select(x => x.Object).Where(x => x.Id == id).FirstOrDefault();
+            Preferences.Remove("NavigationID");
+            Navigation.NavigateTo($"/detail?CreatedDate={message.CreatedDate}&title={message.Title}&body={message.Body}");
+        }
+    }
+}
+
+-----------------------------------------
+Config IOS
+Thêm thư viện: Xamarin.Firebase.iOS.CloudMessaging
+Sửa file project thêm 
+	<ItemGroup>
+		<BundleResource Include="Platforms\iOS\GoogleService-Info.plist" link="GoogleService-Info.plist" />
+	</ItemGroup>
+
+
+        public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
+        {
+            Firebase.Core.App.Configure();
+
+            if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+            {
+                var authOption = UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound;
+
+                UNUserNotificationCenter.Current.RequestAuthorization(authOption, (granted, error) =>
+                {
+                });
+
+                UNUserNotificationCenter.Current.Delegate = new UserNotificationCenterDelegate();
+
+                Messaging.SharedInstance.AutoInitEnabled = true;
+                Messaging.SharedInstance.Delegate = this;
+            }
+            UIApplication.SharedApplication.RegisterForRemoteNotifications();
+
+            return base.FinishedLaunching(application, launchOptions);
+        }
+
+        [Export("messaging:didReceiveRegistrationToken:")]
+        public void DidReceiveRegistrationToken(Messaging message, string regToken)
+        {
+            if (Preferences.ContainsKey("DeviceToken"))
+            {
+                Preferences.Remove("DeviceToken");
+            }
+            Preferences.Set("DeviceToken", regToken);
+        }
+
+        Thêm class :UserNotificationCenterDelegate

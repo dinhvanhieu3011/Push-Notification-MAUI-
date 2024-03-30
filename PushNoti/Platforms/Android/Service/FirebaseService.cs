@@ -68,20 +68,22 @@ namespace PushNoti.Platforms.Android.Service
 
             var notificationManager = NotificationManagerCompat.From(this);
             notificationManager.Notify(MainActivity.NotificationID, notificationBuilder.Build());
-            AddMessageToDb(messageBody, title);
+            AddMessageToDb(messageBody, title, data["NavigationID"]);
 
         }
-
-        private void AddMessageToDb(string messageBody, string title)
+        private void AddMessageToDb(string messageBody, string title, string id )
         {
             FirebaseClient firebaseClient = new FirebaseClient(baseUrl: "https://myapp-fc4db-default-rtdb.asia-southeast1.firebasedatabase.app/");
+
             firebaseClient.Child("notifications").PostAsync(new PushNotification
             {
                 Title = title,
                 Body = messageBody,
                 CreatedDate = DateTime.Now,
-                Id = Guid.NewGuid().ToString(),
+                Id = id,
             });
+
+
         }
     }
 }
